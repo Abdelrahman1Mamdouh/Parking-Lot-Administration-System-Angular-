@@ -1,0 +1,10 @@
+[
+  { "id": "1", "marca": "Ferrari", "modello": "360 Modena", "posti": 2 },
+  { "id": "2", "marca": "Ferrari", "modello": "Purosangue", "posti": 4 },
+  { "id": "3", "marca": "Porsche", "modello": "Panamera", "posti": 4 },
+  { "id": "4", "marca": "Porsche", "modello": "Cayenne", "posti": 4 },
+  { "id": "5", "marca": "Maserati", "modello": "Quattroporte", "posti": 4 },
+  { "id": "6", "marca": "Mercedes", "modello": "CLA", "posti": 4 },
+  { "id": "7", "marca": "Mercedes", "modello": "GLC Coupé", "posti": 4 },
+  { "id": "8", "marca": "Lamborghini", "modello": "Urus", "posti": 4 }
+]

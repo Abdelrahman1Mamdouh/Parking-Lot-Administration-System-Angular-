@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestione Parco Auto</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+  background: #dbeafe;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+    .form-section, .table-section {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      animation: softFade 0.6s ease-out;
+    }
+    .content-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .form-section {
+      flex: 1 1 100%;
+    }
+    .table-section {
+      flex: 1 1 100%;
+    }
+    @media (min-width: 992px) {
+      .form-section {
+        flex: 1 1 40%;
+      }
+      .table-section {
+        flex: 1 1 55%;
+      }
+    }
+    @keyframes softFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .row-even {
+      background-color: #f1f5f9;
+    }
+    .row-odd {
+      background-color: #ffffff;
+    }
+    .btn-success {
+      background-color: #16a34a !important;
+      border-color: #16a34a !important;
+    }
+    .btn-success:hover {
+      background-color: #15803d !important;
+    }
+    .btn-secondary {
+      background-color: #1f2937 !important;
+      border-color: #1f2937 !important;
+    }
+    .btn-secondary:hover {
+      background-color: #111827 !important;
+    }
+    .btn-danger {
+      background-color: #dc2626 !important;
+      border-color: #dc2626 !important;
+    }
+    .btn-danger:hover {
+      background-color: #b91c1c !important;
+    }
+    tr {
+  transition: background-color 0.4s ease, transform 0.2s ease;
+}
+tr.enter-active {
+  animation: fadeInRow 0.4s ease forwards;
+}
+tr.leave-active {
+  animation: fadeOutRow 0.3s ease forwards;
+}
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOutRow {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); height: 0; margin: 0; padding: 0; }
+}
+tbody tr.row-even td {
+  background-color: #f3e8ff !important; /* light purple */
+}
+tbody tr.row-odd td {
+  background-color: #fff9db !important; /* light yellow */
+}
+tbody tr:hover td {
+  background-color: #e0f2fe !important;
+}
+    tr:hover {
+      transform: scale(1.005);
+    }
+    .btn-group-sm .btn {
+      margin-right: 5px;
+    }
+    .is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220,53,69,.25);
+  }
+</style>
+</head>
+<body style="margin: 0; padding: 40px 0; background: #fcfde3;">
+  <div class="container py-5" style="background: #08009e9b; border-radius: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.05);">
+  <div class="content-row">
+    <div class="form-section">
+      <h2 class="mb-4 text-primary">Gestione Appuntamenti</h2>
+      <form #form="ngForm" (ngSubmit)="saveAppointment(form)" novalidate>
+        <input type="hidden" [(ngModel)]="selectedId" name="selectedId">
+        <div class="row g-3">
+          <div class="col-md-6">
+  <input class="form-control" type="date" [(ngModel)]="formData.data" name="data" required [ngClass]="{ 'is-invalid': form.submitted && !form.controls['data']?.valid }">
+          </div>
+          <div class="col-md-6">
+  <input class="form-control" type="time" [(ngModel)]="formData.ora" name="ora" required [ngClass]="{ 'is-invalid': form.submitted && !form.controls['ora']?.valid }">
+          </div>
+          <div class="col-md-12">
+            <input class="form-control" type="text" [(ngModel)]="formData.cliente" name="cliente" placeholder="Cliente" required [ngClass]="{ 'is-invalid': form.submitted && !form.controls['cliente']?.valid }">
+          </div>
+          <div class="col-md-12">
+            <input class="form-control" type="text" [(ngModel)]="formData.indirizzoSposa" name="indirizzoSposa" placeholder="Indirizzo Sposa" required [ngClass]="{ 'is-invalid': form.submitted && !form.controls['indirizzoSposa']?.valid }">
+          </div>
+          <div class="col-md-12">
+            <input class="form-control" type="text" [(ngModel)]="formData.luogo" name="luogo" placeholder="Luogo Celebrazione">
+          </div>
+          <div class="col-md-12">
+            <textarea class="form-control" [(ngModel)]="formData.note" name="note" placeholder="Note Cliente"></textarea>
+          </div>
+          <div class="col-md-12">
+            <select class="form-select" [(ngModel)]="formData.auto" name="auto" required [ngClass]="{ 'is-invalid': form.submitted && !form.controls['auto']?.valid }">
+              <option *ngFor="let a of automobili" [value]="a.id">{{ a.marca }} - {{ a.modello }}</option>
+            </select>
+          </div>
+          <div class="col-md-12 d-flex gap-2">
+            <button class="btn btn-success flex-fill" type="submit">Salva</button>
+            <button class="btn btn-secondary flex-fill" type="button" (click)="exportAppointments()">Esporta</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-section" style="width: 100%;">
+      <h4 class="mb-3 text-secondary">Elenco Appuntamenti</h4>
+      <table class="table table-hover table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Data/Ora</th>
+            <th>Cliente</th>
+            <th>Indirizzo</th>
+            <th>Auto</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appt of appointments; let i = index" [ngClass]="[i % 2 === 0 ? 'row-even' : 'row-odd', 'enter-active']">
+  <td>{{ appt.data }} {{ appt.ora }}</td>
+  <td>{{ appt.cliente }}</td>
+  <td>{{ appt.indirizzoSposa }}</td>
+  <td>{{ getAutoLabel(appt.auto) }}</td>
+  <td [ngStyle]="{ 'background-color': i % 2 === 0 ? '#f3e8ff' : '#fff9db' }">
+    <div class="d-inline-flex gap-2 justify-content-center">
+      <button class="btn btn-secondary btn-sm" (click)="editAppointment(i)">Modifica</button>
+      <button class="btn btn-danger btn-sm" (click)="deleteAppointment(i)">Elimina</button>
+    </div>
+  </td>
+</tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</body>
+</html>
